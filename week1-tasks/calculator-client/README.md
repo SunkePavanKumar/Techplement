@@ -29,7 +29,7 @@ Backend for this application is contianed in the calculator-server folder and it
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/Techplament
+   git clone https://github.com/SunkePavanKumar/Techplement.git
    ```
 
 2. Navigate to the project directory:
