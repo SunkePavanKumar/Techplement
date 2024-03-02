@@ -1,11 +1,10 @@
 import "./App.css";
-import Calculator from "./components/Calculator";
-import HistoryModal from "./components/HistoryModal";
+import Landing from "./components/Landing";
 
 function App() {
   return (
     <div className="">
-      <Calculator />
+      <Landing />
     </div>
   );
 }

@@ -10,7 +10,7 @@ A simple front-end calculator app built with Vite, React, and Tailwind CSS.
 
 #### Note :
 
-Backend for this application is contianed in the calculator-server folder and its configuration is described in that folder's read me
+Backend for this application is contained in the calculator-server folder and its configuration is described in that folder's read me
 
 ## Technologies Used
 
