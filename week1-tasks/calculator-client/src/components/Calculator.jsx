@@ -67,9 +67,9 @@ function Calculator() {
     "=",
   ];
   return (
-    <div className={`flex items-center justify-center mt-6 `}>
+    <div className={`flex items-center justify-center mt-6`}>
       <div
-        className={`h-[500px] w-[300px]  border-2 border-gray-200 rounded-lg bg-[#ffff] shadow-xl `}
+        className={`h-[570px] w-[300px]  border-2 border-gray-200 rounded-lg bg-[#ffff] shadow-xl `}
       >
         <div className=" grid grid-row-12 h-full relative">
           <div className=" row-span-4">

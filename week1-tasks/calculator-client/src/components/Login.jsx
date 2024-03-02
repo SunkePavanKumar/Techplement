@@ -1,9 +1,38 @@
 import { User, Lock, LogIn, Calculator } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import toast, { Toaster } from "react-hot-toast";
+import axios from "axios";
 
 const Landing = () => {
+  const navigator = useNavigate();
+  async function handleLogin(e) {
+    e.preventDefault();
+
+    // Validate inputs
+    const formData = new FormData(event.target);
+    const { email, password } = Object.fromEntries(formData.entries());
+    if (!email || !password) {
+      return toast.error("Enter the required fields");
+    }
+
+    try {
+      const endpoint = `${import.meta.env.VITE_BACKEND_URI}/users/signin`;
+      const response = await axios.post(endpoint, { email, password });
+      const token = response.data.token;
+
+      localStorage.setItem("token", token);
+      toast.success("Logged in Successfully");
+      setTimeout(() => {
+        navigator("/calculator");
+      }, 500);
+    } catch (error) {
+      console.error("Login failed:", error);
+      setError("Invalid email or password. Please try again.");
+    }
+  }
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-r from-green-400 to-blue-500">
+      <Toaster />
       <div className="bg-white p-10 rounded-lg shadow-2xl max-w-lg w-full">
         <h2 className="text-4xl font-bold text-center text-gray-800 mb-4">
           CalcApp
@@ -16,19 +45,20 @@ const Landing = () => {
           <Calculator className="mx-auto h-24 w-24 text-blue-500" />
         </div>
 
-        <form>
+        <form onSubmit={handleLogin}>
           <div className="mb-5">
             <label
-              htmlFor="username"
+              htmlFor="email"
               className="block mb-2 text-sm font-medium text-gray-900"
             >
-              Username
+              email
             </label>
             <div className="flex items-center border border-gray-300 rounded-lg">
               <User className="ml-3" />
               <input
                 type="text"
-                id="username"
+                id="email"
+                name="email"
                 className="p-3 pl-0 bg-transparent w-full focus:outline-none"
                 placeholder="Your username"
               />
@@ -47,6 +77,7 @@ const Landing = () => {
               <input
                 type="password"
                 id="password"
+                name="password"
                 className="p-3 pl-0 bg-transparent w-full focus:outline-none"
                 placeholder="Your password"
               />

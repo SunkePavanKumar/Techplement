@@ -1,10 +1,11 @@
 import { User, Lock, Calculator, UserPlus } from "lucide-react";
 import toast, { Toaster } from "react-hot-toast";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const SignUp = () => {
-  const navigator = useNavigate;
+  const navigator = useNavigate();
   async function signUpUser(e) {
     e.preventDefault();
     const formData = new FormData(event.target);
@@ -27,11 +28,16 @@ const SignUp = () => {
         email,
         password,
       });
+      if (response.data.message === "User Already Exists") {
+        return toast.error("User Already Exists");
+      }
       const token = response.data.token;
 
       // Store the token in local storage
       localStorage.setItem("token", token);
+      e.target.reset();
       toast.success("Logged in successfully");
+
       setTimeout(() => {
         navigator("/login");
       }, 1000);
