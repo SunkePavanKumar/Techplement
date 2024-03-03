@@ -35,6 +35,7 @@ const SignUp = () => {
 
       // Store the token in local storage
       localStorage.setItem("token", token);
+      localStorage.setItem("user", email);
       e.target.reset();
       toast.success("Logged in successfully");
 

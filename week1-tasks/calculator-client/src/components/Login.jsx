@@ -21,13 +21,14 @@ const Landing = () => {
       const token = response.data.token;
 
       localStorage.setItem("token", token);
+      localStorage.setItem("user", email);
       toast.success("Logged in Successfully");
       setTimeout(() => {
         navigator("/calculator");
       }, 500);
     } catch (error) {
       console.error("Login failed:", error);
-      setError("Invalid email or password. Please try again.");
+      toast.error("Invalid email or password. Please try again.");
     }
   }
   return (

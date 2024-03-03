@@ -1,7 +1,30 @@
 import React, { useState } from "react";
 import { MdOutlineHistory } from "react-icons/md";
 import { RxCross2 } from "react-icons/rx";
-function HistoryModal({ history, sethistory }) {
+import axios from "axios";
+function HistoryModal({ history, sethistory, historyData, sethistoryData }) {
+  const user = localStorage.getItem("user");
+  async function clearAudit() {
+    try {
+      const endpoint = `${
+        import.meta.env.VITE_BACKEND_URI
+      }/audit?email=${user}`;
+      await axios.delete(endpoint);
+      sethistoryData([]);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  }
+
+  async function clearSingleAudit(id) {
+    try {
+      const endpoint = `${import.meta.env.VITE_BACKEND_URI}/audit/${id}`;
+      await axios.delete(endpoint);
+      sethistoryData([...historyData]);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  }
   return (
     <>
       <div
@@ -22,7 +45,12 @@ function HistoryModal({ history, sethistory }) {
               </div>
 
               <div className=" flex items-center justify-center">
-                <h1 className=" text-gray-400 text-sm">Clear all</h1>
+                <h1
+                  className=" text-gray-400 text-sm cursor-pointer hover:bg-gray-400 hover:text-white p-1 rounded-xl"
+                  onClick={clearAudit}
+                >
+                  Clear all
+                </h1>
                 <div className=" flex items-center justify-end">
                   <button
                     type="button"
@@ -51,36 +79,17 @@ function HistoryModal({ history, sethistory }) {
                 </div>
               </div>
             </div>
-            <div className=" text-black  pl-4 pr-4 flex items-center justify-between">
-              <h1>100*10=1000 </h1>
-              <div className=" mb-4">
-                <RxCross2 />
+            {historyData.map((data) => (
+              <div
+                className=" text-black  pl-4 pr-4 flex items-center justify-between"
+                key={data._id}
+              >
+                <h1 className=" text-center">{data.history} </h1>
+                <div className=" mb-4">
+                  <RxCross2 onClick={() => clearSingleAudit(data._id)} />
+                </div>
               </div>
-            </div>
-            <div className=" text-black  pl-4 pr-4 flex items-center justify-between">
-              <h1>100*10=1000 </h1>
-              <div className=" mb-4">
-                <RxCross2 />
-              </div>
-            </div>
-            <div className=" text-black  pl-4 pr-4 flex items-center justify-between">
-              <h1>100*10=1000 </h1>
-              <div className=" mb-4">
-                <RxCross2 />
-              </div>
-            </div>
-            <div className=" text-black  pl-4 pr-4 flex items-center justify-between">
-              <h1>100*10=1000 </h1>
-              <div className=" mb-4">
-                <RxCross2 />
-              </div>
-            </div>
-            <div className=" text-black  pl-4 pr-4 flex items-center justify-between">
-              <h1>100*10=1000 </h1>
-              <div className=" mb-4">
-                <RxCross2 />
-              </div>
-            </div>
+            ))}
           </div>
         </div>
       </div>

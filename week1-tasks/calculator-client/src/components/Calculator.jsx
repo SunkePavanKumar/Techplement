@@ -1,24 +1,50 @@
-import React, { useRef, useState } from "react";
-
+import React, { useEffect, useRef, useState } from "react";
+import axios from "axios";
 import { MdOutlineHistory } from "react-icons/md";
 import { IoMdArrowBack } from "react-icons/io";
 import HistoryModal from "./HistoryModal";
+import { Link } from "react-router-dom";
+import { ArrowRight } from "lucide-react";
 function Calculator() {
   let [history, sethistory] = useState(false);
+  let [historyData, sethistoryData] = useState([]);
   let data = useRef("");
+  let user = localStorage.getItem("user");
   function onClickHistory() {
     sethistory((prev) => !prev);
   }
 
-  function calculation(button, expression) {
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const endpoint = `${
+          import.meta.env.VITE_BACKEND_URI
+        }/audit?email=${user}`;
+        const response = await axios.get(endpoint);
+        sethistoryData([...response.data]);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+  }, historyData);
+  async function calculation(button, expression) {
     event.preventDefault();
     try {
+      const endpoint = `${import.meta.env.VITE_BACKEND_URI}/audit`;
       let sanitizedExpression = expression.current.value.replace(
         /(\d+)%/g,
         (_, p1) => `${parseFloat(p1) / 100}`
       );
       if (button === "=") {
         let response = eval(sanitizedExpression);
+        let dataToPush = sanitizedExpression + "=" + response;
+        await axios.post(endpoint, { email: user, history: dataToPush });
+        sethistoryData((prev) => [
+          { history: sanitizedExpression + "=" + response },
+          ...prev,
+        ]);
         data.current.value = response;
       } else if (button === "C") {
         data.current.value = "";
@@ -66,7 +92,25 @@ function Calculator() {
     ".",
     "=",
   ];
-  return (
+  return user === null || user === undefined || !user ? (
+    <div className="min-h-screen flex flex-col justify-center items-center bg-gradient-to-r from-green-400 to-blue-500">
+      <div className="text-center p-12 bg-white rounded-lg shadow-lg mx-4">
+        <h1 className="text-5xl font-bold text-gray-800 mb-4">
+          Please Login to use the CalcApp
+        </h1>
+        <p className="text-gray-600 mb-8">
+          The smart solution for your everyday calculations.
+        </p>
+        <Link
+          to={"/login"}
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded inline-flex items-center"
+        >
+          <span>Login</span>
+          <ArrowRight className="ml-2" />
+        </Link>
+      </div>
+    </div>
+  ) : (
     <div className={`flex items-center justify-center mt-6`}>
       <div
         className={`h-[570px] w-[300px]  border-2 border-gray-200 rounded-lg bg-[#ffff] shadow-xl `}
@@ -128,7 +172,12 @@ function Calculator() {
             ))}
           </div>
 
-          <HistoryModal history={history} sethistory={sethistory} />
+          <HistoryModal
+            history={history}
+            sethistory={sethistory}
+            historyData={historyData}
+            sethistoryData={sethistoryData}
+          />
         </div>
       </div>
     </div>
